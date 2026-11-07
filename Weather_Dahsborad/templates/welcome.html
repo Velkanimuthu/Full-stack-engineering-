@@ -1,0 +1,229 @@
+<!--<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Weather Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 50px; /* space around the dashboard */
+      background: linear-gradient(to right, #ffb6c1, #ff69b4);
+      font-family: Arial, sans-serif;
+    }
+
+    .dashboard-container {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 1200px;
+      margin: auto;
+      box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
+      border: 10px solid pink; /* pink coat around the dashboard */
+    }
+
+    h1 {
+      text-align: center;
+      color: #ff1493;
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    .search-box {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .search-box input {
+      padding: 10px;
+      font-size: 16px;
+      width: 250px;
+      border: 2px solid #ff69b4;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    .search-box button {
+      padding: 10px 15px;
+      font-size: 16px;
+      background: #ff69b4;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .card {
+      background: #ffe4ec;
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    canvas {
+      display: block;
+      margin: 40px auto 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container">
+    <h1>🌤 Weather in {{ city }}</h1>
+
+     Search box -->
+    <!--<div class="search-box">
+      <form method="POST" action="/welcome">
+        <input type="text" name="city" placeholder="Enter city" required>
+        <button type="submit">Search</button>
+      </form>
+    </div>
+  -->
+    <!-- Weather cards -->
+    <!--<div class="card-container">
+      {% for day in weather_data %}
+        <div class="card">
+          <h3>{{ day.date }}</h3>
+          <p>🌡 Temp: {{ day.temp }}°C</p>
+          <p>🌧 Rain: {{ day.rain }} mm</p>
+          <p>☁ Condition: {{ day.weather }}</p>
+        </div>
+      {% endfor %}
+    </div> -->
+
+    <!-- Chart -->
+   <!-- <canvas id="tempChart" width="800" height="400"></canvas>
+  </div>
+
+  <script>
+    const weatherData = JSON.parse(`{{ weather_data | tojson | safe | default("[]") }}`);
+    console.log("WeatherData:", weatherData);
+    const labels = weatherData.map(day => day.date);
+    const temps = weatherData.map(day => day.temp);
+
+    const ctx = document.getElementById("tempChart").getContext("2d");
+    new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: labels,
+        datasets: [{
+          label: "Temperature (°C)",
+          data: temps,
+          borderColor: "rgba(255, 99, 132, 1)",
+          backgroundColor: "rgba(255, 99, 132, 0.2)",
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: true }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
+*/--><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Weather Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="logout">
+    <a href="{{ url_for('logout') }}">Logout</a>
+  </div>
+
+  <div class="dashboard-container">
+    <h1>🌤 Weather in {{ city }}</h1>
+
+    <!-- Search box -->
+    <div class="search-box">
+      <form method="POST" action="/welcome">
+        <select name="city" required class="styled-select">
+    <option value="" {% if not city %}selected{% endif %}>Select your city</option>
+    {% set tamilnadu_cities = [
+        "Ariyalur", "Chennai", "Coimbatore", "Cuddalore", "Dharmapuri",
+        "Dindigul", "Erode", "Kallakurichi", "Kancheepuram", "Karur",
+        "Krishnagiri", "Madurai", "Nagapattinam", "Namakkal", "Nilgiris",
+        "Perambalur", "Pudukkottai", "Ramanathapuram", "Ranipet", "Salem",
+        "Sivaganga", "Tenkasi", "Thanjavur", "Theni", "Thoothukudi",
+        "Tiruchirappalli", "Tirunelveli", "Tirupattur", "Tiruppur",
+        "Tiruvallur", "Tiruvannamalai", "Tiruvarur", "Vellore",
+        "Villupuram", "Virudhunagar", "Chengalpattu", "Kanyakumari", "Mayiladuthurai"
+    ] %}
+    {% for c in tamilnadu_cities %}
+        <option value="{{ c }}" {% if city == c %}selected{% endif %}>{{ c }}</option>
+    {% endfor %}
+</select>
+        <br><button type="submit">Search</button>
+      </form>
+    </div>
+
+    <!-- Weather cards -->
+    <div class="card-container">
+      {% for day in weather_data %}
+        <div class="card">
+          <h3>{{ day.date }}</h3>
+          <p>🌡 Temp: {{ day.temp }}°C</p>
+          <p>🌧 Rain: {{ day.rain }} mm</p>
+          <p>☁ Condition: {{ day.weather }}</p>
+        </div>
+      {% endfor %}
+    </div>
+    <!-- Weather Suggestion -->
+{% if suggestion %}
+  <div class="suggestion-box">
+    <h2>{{ suggestion.quote }}</h2>
+    <p>💡 <strong>Health Tip:</strong> {{ suggestion.advice }}</p>
+  </div>
+{% endif %}
+
+    <!-- Chart -->
+    <canvas id="tempChart" width="800" height="400"></canvas>
+  </div>
+
+  <script>
+    const weatherData = JSON.parse(`{{ weather_data | tojson | safe | default("[]") }}`);
+    const labels = weatherData.map(day => day.date);
+    const temps = weatherData.map(day => day.temp);
+
+    const ctx = document.getElementById("tempChart").getContext("2d");
+    new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: labels,
+        datasets: [{
+          label: "Temperature (°C)",
+          data: temps,
+          borderColor: "rgba(255, 99, 132, 1)",
+          backgroundColor: "rgba(255, 99, 132, 0.2)",
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: true } }
+      }
+    });
+  </script>
+</body>
+</html>
